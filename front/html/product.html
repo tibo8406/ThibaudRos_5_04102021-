@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
+    <script src="../js/product.js"></script>
+    <script src="../js/cart.js"></script>
+
+
     <title>Nom du produit</title>
 
     <meta charset="utf-8">
@@ -52,7 +56,7 @@
             <div class="item__content">
 
               <div class="item__content__titlePrice">
-                <h1 id="title"><!-- Nom du produit --></h1>
+                <h1 id="title"></h1>
                 <p>Prix : <span id="price"><!-- 42 --></span>€</p>
               </div>
 
@@ -64,7 +68,7 @@
               <div class="item__content__settings">
                 <div class="item__content__settings__color">
                   <label for="color-select">Choisir une couleur :</label>
-                  <select name="color-select" id="colors">
+                  <select name="color-select" id="colors" required>
                       <option value="">--SVP, choisissez une couleur --</option>
 <!--                       <option value="vert">vert</option>
                       <option value="blanc">blanc</option> -->
@@ -73,12 +77,12 @@
 
                 <div class="item__content__settings__quantity">
                   <label for="itemQuantity">Nombre d'article(s) (1-100) :</label>
-                  <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity">
+                  <input type="number" name="itemQuantity" min="1" max="100" value="0" id="quantity" required>
                 </div>
               </div>
 
               <div class="item__content__addButton">
-                <button id="addToCart">Ajouter au panier</button>
+                <button class ="addToCart" id="addToCart">Ajouter au panier</button>
               </div>
 
             </div>
@@ -110,6 +114,5 @@
         </div>
       </div>
     </footer>
-  <script src="../js/product.js"></script>
   </body>
 </html>
