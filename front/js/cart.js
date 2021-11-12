@@ -13,6 +13,7 @@
     }
 }*/
 
+// cherche dans le panier si un produits de meme couleur existe deja
 function findInCart(id, color) {
     let listCart = getCart();
     const item = listCart.find(item => item.itemId === id && item.colorChoice === color);
@@ -23,6 +24,7 @@ function findInCart(id, color) {
     }
 }
 
+//fonction ajoutant au panier
 function addToCart(itemId, colorChoice, quantity) {
     let listCart = getCart();
     itemFind = findInCart(itemId, colorChoice);
@@ -36,7 +38,7 @@ function addToCart(itemId, colorChoice, quantity) {
 }
 
 
-//fonction recuperer le panier si existant
+//fonction pour recuperer le panier si existant
 function getCart() {
     let listCart = localStorage.getItem("listCart");
     if (listCart == null || listCart == 'undefined') {
@@ -56,7 +58,6 @@ function removeOfCart(idToRemove, colorToRemove) {
     //Alerte produit supprimé et refresh
     saveCart(listCart);
     alert("Ce produit a bien été supprimé du panier");
-
     location.reload();
 }
 
@@ -66,7 +67,7 @@ function saveCart(listCart) {
 }
 
 
-
+// pour modifier la quantité sur l apage panier
 function modifyQuantity() {
     document.querySelectorAll(".itemQuantity").forEach(element => {
         element.addEventListener("change", (event) => {
@@ -236,6 +237,8 @@ let mailOk = false;
 let cartHTML = "";
 let totalPrice = 0;
 let totalQuantity = 0;
+
+//interrogation de l'api pour l'affichage des produits
 async function loadProducts() {
     let listCart = getCart();
     for (item of listCart) {
