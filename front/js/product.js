@@ -1,6 +1,15 @@
+//fonction pour verifier l'id de l'url est manquant
+function idCheck(id) {
+    if (id === null) {
+        alert("Identitifant manquant");
+        document.location.href = "index.html";
+    };
+}
+
 let params = (new URL(document.location)).searchParams;
 let id = params.get('id');
 const url = "http://localhost:3000/api/products/" + id;
+idCheck(id);
 fetch(url)
     .then(function(res) {
         if (res.ok) {
@@ -8,7 +17,6 @@ fetch(url)
         }
     })
     .then(function(product) {
-
         document.querySelector(".item__img").innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}"></img>`;
         document.getElementById("price").innerHTML = `${product.price} `;
         document.getElementById("description").innerHTML = `${product.description}`;
@@ -19,27 +27,27 @@ fetch(url)
         document.getElementById("colors").innerHTML = colorHTML;
         // ajoutez au panier
         document.getElementById("addToCart").addEventListener('click', function() {
-                let colorChoice = document.getElementById("colors").value;
-                let numberChoice = +document.getElementById("quantity").value;
-                if (colorChoice !== "" && numberChoice >= 1) {
-                    addToCart(product._id, colorChoice, numberChoice);
-                    alert("Article ajouté au panier");
-
-                } else {
-                    if (colorChoice == "" && numberChoice >= 1) {
-                        alert("Veuillez choisir une couleur");
-                    }
-                    if (colorChoice !== "" && numberChoice < 1) {
-                        alert("Veuillez choisir une quantité");
-                    }
-                    if (colorChoice == "" && numberChoice < 1) {
-                        alert("Veuillez choisir une couleur et une quantité");
-                    }
+            let colorChoice = document.getElementById("colors").value;
+            let numberChoice = +document.getElementById("quantity").value;
+            if (colorChoice !== "" && numberChoice >= 1) {
+                addToCart(product._id, colorChoice, numberChoice, product.price);
+                alert("Article ajouté au panier");
+            } else {
+                if (colorChoice == "" && numberChoice >= 1) {
+                    alert("Veuillez choisir une couleur");
                 }
+                if (colorChoice !== "" && numberChoice < 1) {
+                    alert("Veuillez choisir une quantité");
+                }
+                if (colorChoice == "" && numberChoice < 1) {
+                    alert("Veuillez choisir une couleur et une quantité");
+                }
+            }
 
-            })
-            //fin ajouter au panier
+        })
     })
     .catch(function(err) {
+        alert("Cet identifiant produit n'existe pas");
+        document.location.href = "index.html";
         // Une erreur est survenue
     });

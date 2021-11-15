@@ -1,38 +1,29 @@
-/*function calculateSum(price, quantity) {
+//fonction calcul du monatnt en euro et des quantités
+function calculateSum() {
     let listCart = getCart;
-    if (totalPrice == 'undefined') {
-        //let totalQuantity = 0;
-        let totalPrice = 0;
-        for (item in listCart) {
-            totalPrice += price * quantity;
-            //totalQuantity += quantity;
-        }
-    } else {
-        totalPrice += price * quantity;
-        //totalQuantity += quantity;
+    for (item in listCart) {
+        totalPrice += listCart.priceprice * listCart.quantity;
+        totalQuantity += listCart.quantity;
     }
-}*/
+    document.getElementById("totalQuantity").innerHTML = `${totalQuantity}`;
+    document.getElementById("totalPrice").innerHTML = `${totalPrice}`;
+}
 
-// cherche dans le panier si un produits de meme couleur existe deja
-function findInCart(id, color) {
+// cherche dans le panier si un produit de meme couleur existe deja
+function findProductIndexInCart(id, color) {
     let listCart = getCart();
-    const item = listCart.find(item => item.itemId === id && item.colorChoice === color);
-    if (item != null) {
-        return listCart.indexOf(item);
-    } else {
-        return false;
-    }
+    return listCart.findIndex(item => item.itemId === id && item.colorChoice === color);
 }
 
 //fonction ajoutant au panier
-function addToCart(itemId, colorChoice, quantity) {
+function addToCart(itemId, colorChoice, quantity, price) {
     let listCart = getCart();
-    itemFind = findInCart(itemId, colorChoice);
-    if (itemFind !== false) {
-
-        listCart[itemFind].quantity += quantity;
+    const itemIndex = findProductIndexInCart(itemId, colorChoice);
+    if (itemIndex !== -1) {
+        listCart[itemIndex].quantity += quantity;
+        listCart[itemIndex].price = price;
     } else {
-        listCart.push({ itemId, quantity, colorChoice });
+        listCart.push({ itemId, quantity, colorChoice, price });
     }
     saveCart(listCart);
 }
@@ -41,20 +32,17 @@ function addToCart(itemId, colorChoice, quantity) {
 //fonction pour recuperer le panier si existant
 function getCart() {
     let listCart = localStorage.getItem("listCart");
-    if (listCart == null || listCart == 'undefined') {
+    if (listCart === null || listCart === 'undefined') {
         return [];
-    } else {
-        return JSON.parse(listCart);
     }
+    return JSON.parse(listCart);
 }
 
 //fonction pour supprimer un produit du panier
 function removeOfCart(idToRemove, colorToRemove) {
     let listCart = getCart();
-    //const index = listCart.findIndex(item => item.itemId === idToRemove && item.colorChoice === colorToRemove);*/
-    index = findInCart(idToRemove, colorToRemove);
+    index = findProductIndexInCart(idToRemove, colorToRemove);
     listCart.splice(index, 1);
-
     //Alerte produit supprimé et refresh
     saveCart(listCart);
     alert("Ce produit a bien été supprimé du panier");
@@ -67,22 +55,20 @@ function saveCart(listCart) {
 }
 
 
-// pour modifier la quantité sur l apage panier
+// pour modifier la quantité sur la page panier
 function modifyQuantity() {
     document.querySelectorAll(".itemQuantity").forEach(element => {
         element.addEventListener("change", (event) => {
             event.preventDefault();
-
             //Selection de l'element à modifier en fonction de son id ET sa couleur
             listCart = getCart();
             idmodif = element.dataset.id;
             colormodif = element.dataset.color;
-            index = findInCart(idmodif, colormodif);
+            index = findProductIndexInCart(idmodif, colormodif);
             listCart[index].quantity = element.valueAsNumber;
             saveCart(listCart);
             // refresh
             location.reload();
-
         });
     });
 }
@@ -92,9 +78,7 @@ function modifyQuantity() {
 
 //fonction du formulaire de commande avec analyse et validation par regex
 function recupForm() {
-
     const form = document.querySelector(".cart__order__form");
-
     //ecoute de la modif du mail
     form.email.addEventListener("change", function() {
         validateMail(this);
@@ -104,13 +88,12 @@ function recupForm() {
     function validateMail(inputMail) {
         const mailRegex = new RegExp('[A-Za-z0-9._-]+@[A-Za-z0-9._-]+\\.[a-zA-Z][a-zA-Z]+$');
         const emailErrorMsg = inputMail.nextElementSibling;
-
         if (mailRegex.test(inputMail.value)) {
             emailErrorMsg.innerHTML = '<font color=green>Ok</font>';
-            return mailOk = true;
+            return mailRegexOk = true;
         } else {
             emailErrorMsg.innerHTML = 'Email non valide';
-            return mailOk = false;
+            return mailRegexOk = false;
         }
 
     };
@@ -123,15 +106,13 @@ function recupForm() {
     //fonction validation du nom
     function validateLettersLastName(inputLastName) {
         let lettersRegex = new RegExp('^[a-zA-Z\-]+$');
-
         let lastNameErrorMsg = inputLastName.nextElementSibling;
-
         if (lettersRegex.test(inputLastName.value)) {
             lastNameErrorMsg.innerHTML = '<font color=green>Ok</font>';
-            return lastNameOk = true;
+            return lastNameRegexOk = true;
         } else {
             lastNameErrorMsg.innerHTML = 'Nom non valide';
-            return lastNameOk = false;
+            return lastNameRegexOk = false;
         }
 
     };
@@ -149,10 +130,10 @@ function recupForm() {
 
         if (lettersRegex.test(inputFirstName.value)) {
             firstNameErrorMsg.innerHTML = '<font color=green>Ok</font>';
-            return firstNameOk = true;
+            return firstNameRegexOk = true;
         } else {
             firstNameErrorMsg.innerHTML = 'Nom non valide';
-            return firstNameOk = false;
+            return firstNameRegexOk = false;
         }
 
     };
@@ -163,7 +144,7 @@ function sendForm() {
 
     //Ecouter le bouton commander
     document.getElementById("order").addEventListener("click", (event) => {
-        if (firstNameOk == true && lastNameOk == true && mailOk == true) {
+        if (firstNameRegexOk == true && lastNameRegexOk == true && mailRegexOk == true) {
             //Récupération dess ifnormations du formulaire
             let inputFirstName = document.getElementById('firstName');
             let inputLastName = document.getElementById('lastName');
@@ -183,24 +164,15 @@ function sendForm() {
             console.log(orderedProducts);
 
             const orderInfo = {
-                    contact: {
-                        firstName: inputFirstName.value,
-                        lastName: inputLastName.value,
-                        address: inputAddress.value,
-                        city: inputCity.value,
-                        email: inputMail.value,
-                    },
-                    products: orderedProducts,
-                }
-                /*const settings = {
-                    method: "POST",
-                    body: JSON.stringify(orderInfo),
-                    headers: {
-                        'Accept': 'application/json',
-                        "Content-Type": "application/json"
-                    },
-                };*/
-                //fetch("http://localhost:3000/api/products/order", settings)
+                contact: {
+                    firstName: inputFirstName.value,
+                    lastName: inputLastName.value,
+                    address: inputAddress.value,
+                    city: inputCity.value,
+                    email: inputMail.value,
+                },
+                products: orderedProducts,
+            }
             fetch("http://localhost:3000/api/products/order", {
                     method: "POST",
                     body: JSON.stringify(orderInfo),
@@ -231,12 +203,13 @@ function sendForm() {
 
 
 //code general de la page
-let lastNameOk = false;
-let firstNameOk = false;
-let mailOk = false;
+let lastNameRegexOk = false;
+let firstNameRegexOk = false;
+let mailRegexOk = false;
 let cartHTML = "";
 let totalPrice = 0;
 let totalQuantity = 0;
+const productList = [];
 
 //interrogation de l'api pour l'affichage des produits
 async function loadProducts() {
@@ -244,6 +217,7 @@ async function loadProducts() {
     for (item of listCart) {
         const response = await fetch("http://localhost:3000/api/products/" + item.itemId)
         const product = await response.json()
+        productList.push(product);
         cartHTML += `
         <article class="cart__item" data-id="${item.itemId}">
           <div class="cart__item__img">
@@ -269,11 +243,8 @@ async function loadProducts() {
         totalPrice += product.price * item.quantity;
         totalQuantity += item.quantity;
         document.getElementById("cart__items").innerHTML = cartHTML;
-        document.getElementById("totalQuantity").innerHTML = `${totalQuantity}`;
-        document.getElementById("totalPrice").innerHTML = `${totalPrice}`;
     }
-
-
+    calculateSum();
 }
 loadProducts().then(() => {
     modifyQuantity();
