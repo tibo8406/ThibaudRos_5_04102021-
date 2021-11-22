@@ -27,7 +27,7 @@ function findProductIndexInCart(id, color) {
     return listCart.findIndex(item => item.itemId === id && item.colorChoice === color);
 }
 
-//fonction calcul du monatnt en euro et des quantités
+//fonction calcul du montant en euro et des quantités
 function calculateSum() {
     let listCart = getCart;
     for (const item in listCart) {
