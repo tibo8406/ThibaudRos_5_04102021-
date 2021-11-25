@@ -11,16 +11,24 @@ function addToCart(itemId, colorChoice, quantity, price) {
     let listCart = getCart();
     //verification si produit identique deja dans le panier
     const itemIndex = findProductIndexInCart(itemId, colorChoice);
+    //si deja dans le panier
     if (itemIndex !== -1) {
+        //on ajoute la quantité et le prix
         listCart[itemIndex].quantity += quantity;
         listCart[itemIndex].price = price;
     } else {
+        //si non présent, on crée le produit dans le tableau
         listCart.push({ itemId, quantity, colorChoice, price });
     }
+    //on sauvegarde le panier
     saveCart(listCart);
 }
+
+//code generale de la page
+//on recupere le paramtre dans l'url et on le stocke dans la variable id
 let params = (new URL(document.location)).searchParams;
 let id = params.get("id");
+//on se sert de l'id recupéré pour interroger l'API pour l'id concerné
 const url = "http://localhost:3000/api/products/" + id;
 idCheck(id);
 fetch(url)
