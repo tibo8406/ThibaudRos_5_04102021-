@@ -9,95 +9,120 @@ const productList = [];
 
 //fonction pour recuperer le panier si existant, sinon création tableau vide
 function getCart() {
+    // récupération de listCart dans le localStorage
     let listCart = localStorage.getItem("listCart");
+    //si listcartr est null ou non defini, on renvoie un tableau vide
     if (listCart === null || listCart === "undefined") {
         return [];
     }
+    //sinon on renvoie le tableau existant converti en valeur javascript
     return JSON.parse(listCart);
 }
 
 //fonction pour sauvegarder le panier
 function saveCart(listCart) {
+    //sauevagrde de listcart de local storage converti en chaine JSON
     localStorage.setItem("listCart", JSON.stringify(listCart));
 }
 
-// cherche dans le panier si un produit de meme couleur existe deja
+// cherche dans le panier si un produit de meme couleur existe deja et renvoie l'index
 function findProductIndexInCart(id, color) {
+    //recuperation du panier
     let listCart = getCart();
+    //on renvoie l'index correspondant si on trouve le meme id et la meme couleur
     return listCart.findIndex(item => item.itemId === id && item.colorChoice === color);
 }
 
 //fonction calcul du montant en euro et des quantités
 function calculateSum() {
-    let listCart = getCart;
-    for (const item in listCart) {
+    //recuperation du panier
+    let listCart = getCart();
+    // boucle pour chaque item du panier
+    for (const item of listCart) {
+        //on ajoute à totalPrice, le produit du prix par la quantité
         totalPrice += item.price * item.quantity;
+        //on ajoute à totalQuantity, le quantité de produit
         totalQuantity += item.quantity;
     }
+    //on rajoute dans le code HTML les 2 variables totalQuantity et totalPrice
     document.getElementById("totalQuantity").innerHTML = `${totalQuantity}`;
     document.getElementById("totalPrice").innerHTML = `${totalPrice}`;
 }
 
 
-//fonction test ecoute bouton sppirtmer
+//fonction ecoute bouton supprimer
 function removeOfCart() {
+    //pour chaque element deleteItem
     document.querySelectorAll(".deleteItem").forEach(element => {
+        //on ecoute le click
         element.addEventListener("click", (event) => {
+            //on annule le comportement par defaut du bouton
             event.preventDefault();
-            //Selection de l'element à modifier en fonction de son id ET sa couleur
-            /*let listCart = getCart();
-            const idmodif = element.dataset.id;
-            const colormodif = element.dataset.color;
-            const index = findProductIndexInCart(idmodif, colormodif);
-            listCart[index].quantity = element.valueAsNumber;
-            saveCart(listCart);
-            // refresh
-            location.reload();*/
+            //on recupere le panier
             let listCart = getCart();
+            // on identifie le produit en question grace à data id et data color
             const idToRemove = element.dataset.id;
             const colorToRemove = element.dataset.color;
+            //on trouve l'index correspondant au produit
             const index = findProductIndexInCart(idToRemove, colorToRemove);
+            //on supprime la ligne correspondant à l'index
             listCart.splice(index, 1);
-            //Alerte produit supprimé et refresh
+            //on sauvegarde le panier
             saveCart(listCart);
+            // message de confirmation de la suppression du produit
             alert("Le référence produit " + idToRemove + " " + colorToRemove + " a été supprimée du panier");
+            //on recharge la page
             location.reload();
         });
     });
 }
 // pour modifier la quantité sur la page panier
 function modifyQuantity() {
+    //pour chaque element itemQuantity
     document.querySelectorAll(".itemQuantity").forEach(element => {
+        //on ecoute un changement
         element.addEventListener("change", (event) => {
+            //on annule comportement par defaut
             event.preventDefault();
-            //Selection de l'element à modifier en fonction de son id ET sa couleur
+            //on recupere le panier
             let listCart = getCart();
+            // on identifie le produit en question grace à data id et data color
             const idmodif = element.dataset.id;
             const colormodif = element.dataset.color;
+            //on trouve l'index correspondant au produit
             const index = findProductIndexInCart(idmodif, colormodif);
+            //on modifie la quantité d el'index correspodant par la valeur de l'element
             listCart[index].quantity = element.valueAsNumber;
+            //on suvegarde le panier
             saveCart(listCart);
-            // refresh
+            // on recharge la page
             location.reload();
         });
     });
 }
 //fonction du formulaire de commande avec analyse et validation par regex
 function recupForm() {
+    //recupere l'ensemble du formulaire
     const form = document.querySelector(".cart__order__form");
     //ecoute de la modif du mail
     form.email.addEventListener("change", function() {
+        //on valide ou non grace à la fonction, le contenu du champ email
         validateMail(this);
     });
 
     //fonction validation email
     function validateMail(inputMail) {
+        //création d'une regex
         const mailRegex = new RegExp("[A-Za-z0-9._-]+@[A-Za-z0-9._-]+\\.[a-zA-Z][a-zA-Z]+$");
+        //création du message à afficher
         const emailErrorMsg = inputMail.nextElementSibling;
+        //on test la regex
         if (mailRegex.test(inputMail.value)) {
+            //si correspond à la regex, on rempli en vert avec message ok
             emailErrorMsg.innerHTML = "<font color=green>Ok</font>";
             return mailRegexOk = true;
         } else {
+            //si ne correspond pas à la regex, on rempli en rouge avec message non valide
             emailErrorMsg.innerHTML = "Email non valide";
             return mailRegexOk = false;
         }
@@ -144,19 +169,20 @@ function recupForm() {
 
     }
 }
-
-
-
-
 //code general de la page
 
 //interrogation de l'api pour l'affichage des produits
 async function loadProducts() {
+    //recuperation de listCart
     let listCart = getCart();
+    //pour chaque item de listCart
     for (const item of listCart) {
+        //on interroge l'API
         const response = await fetch("http://localhost:3000/api/products/" + item.itemId);
+        //on recupere la reponse et on la poussse dans productList
         const product = await response.json();
         productList.push(product);
+        //on ajoute le code html suivant pour chaque item de listCart
         cartHTML += `
         <article class="cart__item" data-id="${item.itemId}">
           <div class="cart__item__img">
@@ -179,15 +205,18 @@ async function loadProducts() {
           </div>
         </article>
         `;
-        totalPrice += product.price * item.quantity;
-        totalQuantity += item.quantity;
         document.getElementById("cart__items").innerHTML = cartHTML;
     }
+    //on calcule quantité et prix total
     calculateSum();
 }
+// apres avoir charger tous les produits
 loadProducts().then(() => {
+    //fonction suppression
     removeOfCart();
+    //fonction modifier la quantité
     modifyQuantity();
+    //fonction validation du formulaire
     recupForm();
 });
 //Envoi du formulaire   sortir de la foncion
@@ -202,18 +231,8 @@ document.getElementById("order").addEventListener("click", (event) => {
         const inputAddress = document.getElementById("address");
         const inputCity = document.getElementById("city");
         const inputMail = document.getElementById("email");
-        //Créatino du tableau de produit commandé
-
+        //Création du tableau de produit commandé
         const orderedProducts = getCart().map(item => item.itemId);
-
-
-        //recharger list cart
-        /* listCart = getCart();
-        for (let p = 0; p < listCart.length; p++) {
-            orderedProducts.push(listCart[p].itemId)
-        }
-        console.log(orderedProducts);
-*/
         if (!orderedProducts.length) {
             alert("votre panier est vide");
             return;

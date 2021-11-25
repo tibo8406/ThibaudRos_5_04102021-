@@ -7,7 +7,9 @@ function idCheck(id) {
 }
 //fonction ajoutant au panier
 function addToCart(itemId, colorChoice, quantity, price) {
+    //recuperation du panier existant
     let listCart = getCart();
+    //verification si produit identique deja dans le panier
     const itemIndex = findProductIndexInCart(itemId, colorChoice);
     if (itemIndex !== -1) {
         listCart[itemIndex].quantity += quantity;
