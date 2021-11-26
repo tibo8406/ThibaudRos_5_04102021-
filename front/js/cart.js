@@ -1,3 +1,5 @@
+import { getCart, findProductIndexInCart, saveCart } from "./commonCart";
+
 // declaration variable
 let lastNameRegexOk = false;
 let firstNameRegexOk = false;
@@ -6,32 +8,6 @@ let cartHTML = "";
 let totalPrice = 0;
 let totalQuantity = 0;
 const productList = [];
-
-//fonction pour recuperer le panier si existant, sinon création tableau vide
-function getCart() {
-    // récupération de listCart dans le localStorage
-    let listCart = localStorage.getItem("listCart");
-    //si listcartr est null ou non defini, on renvoie un tableau vide
-    if (listCart === null || listCart === "undefined") {
-        return [];
-    }
-    //sinon on renvoie le tableau existant converti en valeur javascript
-    return JSON.parse(listCart);
-}
-
-//fonction pour sauvegarder le panier
-function saveCart(listCart) {
-    //sauevagrde de listcart de local storage converti en chaine JSON
-    localStorage.setItem("listCart", JSON.stringify(listCart));
-}
-
-// cherche dans le panier si un produit de meme couleur existe deja et renvoie l'index
-function findProductIndexInCart(id, color) {
-    //recuperation du panier
-    let listCart = getCart();
-    //on renvoie l'index correspondant si on trouve le meme id et la meme couleur
-    return listCart.findIndex(item => item.itemId === id && item.colorChoice === color);
-}
 
 //fonction calcul du montant en euro et des quantités
 function calculateSum() {
@@ -237,6 +213,7 @@ document.getElementById("order").addEventListener("click", (event) => {
             alert("votre panier est vide");
             return;
         }
+        //création de la comamlnde sur forme d'objet
         const orderInfo = {
             contact: {
                 firstName: inputFirstName.value,
@@ -247,6 +224,7 @@ document.getElementById("order").addEventListener("click", (event) => {
             },
             products: orderedProducts,
         };
+        //requete  post de l'object à l'api
         fetch("http://localhost:3000/api/products/order", {
                 method: "POST",
                 body: JSON.stringify(orderInfo),
@@ -260,7 +238,6 @@ document.getElementById("order").addEventListener("click", (event) => {
             })
             .then(function(elt) {
                 console.log(elt);
-                //localStorage.clear();
                 localStorage.setItem("orderId", elt.orderId);
 
                 document.location.href = "confirmation.html";

@@ -1,5 +1,7 @@
+import { getCart, findProductIndexInCart, saveCart } from "./commonCart";
+
 //fonction pour verifier l'id de l'url est manquant
-function idCheck(id) {
+function idCheckInUrl(id) {
     if (id === null) {
         alert("Identitifant manquant");
         document.location.href = "index.html";
@@ -30,7 +32,9 @@ let params = (new URL(document.location)).searchParams;
 let id = params.get("id");
 //on se sert de l'id recupéré pour interroger l'API pour l'id concerné
 const url = "http://localhost:3000/api/products/" + id;
-idCheck(id);
+//check si l'id existe ou n'est pas erroné
+idCheckInUrl(id);
+//requete sur l'url de l'api + id
 fetch(url)
     .then(function(res) {
         if (res.ok) {
@@ -38,15 +42,18 @@ fetch(url)
         }
     })
     .then(function(product) {
+        //integration des elements de chaque produits
         document.querySelector(".item__img").innerHTML = `<img src="${product.imageUrl}" alt="${product.altTxt}"></img>`;
         document.getElementById("price").innerHTML = `${product.price} `;
         document.getElementById("description").innerHTML = `${product.description}`;
         let colorHTML = "<option value=\"\">--SVP, choisissez une couleur --</option>";
+        //ajout des couleurs
         for (let i = 0; i < product.colors.length; i++) {
             colorHTML += `<option value="${product.colors[i]}">${product.colors[i]}</option>`;
         }
         document.getElementById("colors").innerHTML = colorHTML;
         // ajoutez au panier
+        //ecoute du click sur le bouton ajouter au panier
         document.getElementById("addToCart").addEventListener("click", function() {
             let colorChoice = document.getElementById("colors").value;
             let numberChoice = +document.getElementById("quantity").value;

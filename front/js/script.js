@@ -2,8 +2,10 @@ async function loadConfig() {
     let result = await fetch("../../front/config.json");
     return result.json();
 }
+//chargement de la config (url api)
 loadConfig().then(data => {
     const config = data;
+    //requete et redcuperation de produits dans l'api
     fetch(config.host + "/api/products").then(data => data.json())
         .then(jsonListProducts => {
             class Product {
@@ -12,6 +14,7 @@ loadConfig().then(data => {
                 }
             }
             let productsHTML = "";
+            //integration html des elements pour chaque produits
             for (let jsonProduct of jsonListProducts) {
                 const product = new Product(jsonProduct);
                 productsHTML += `<a href="./product.html?id=${product._id}">
