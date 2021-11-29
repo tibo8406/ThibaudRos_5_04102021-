@@ -1,4 +1,4 @@
-import { getCart, findProductIndexInCart, saveCart } from "./commonCart";
+import { getCart, findProductIndexInCart, saveCart } from "./commonCart.js";
 
 // declaration variable
 let lastNameRegexOk = false;
@@ -67,7 +67,7 @@ function modifyQuantity() {
             const colormodif = element.dataset.color;
             //on trouve l'index correspondant au produit
             const index = findProductIndexInCart(idmodif, colormodif);
-            //on modifie la quantité d el'index correspodant par la valeur de l'element
+            //on modifie la quantité de l'index correspodant par la valeur de l'element
             listCart[index].quantity = element.valueAsNumber;
             //on suvegarde le panier
             saveCart(listCart);
@@ -139,7 +139,7 @@ function recupForm() {
             firstNameErrorMsg.innerHTML = "<font color=green>Ok</font>";
             return firstNameRegexOk = true;
         } else {
-            firstNameErrorMsg.innerHTML = "Nom non valide";
+            firstNameErrorMsg.innerHTML = "Prénom non valide";
             return firstNameRegexOk = false;
         }
 
@@ -158,6 +158,8 @@ async function loadProducts() {
         //on recupere la reponse et on la poussse dans productList
         const product = await response.json();
         productList.push(product);
+        //calcul du sous total pour la ligne produit
+        const subTotalPrice = item.price * item.quantity;
         //on ajoute le code html suivant pour chaque item de listCart
         cartHTML += `
         <article class="cart__item" data-id="${item.itemId}">
@@ -166,8 +168,8 @@ async function loadProducts() {
           </div>
           <div class="cart__item__content">
             <div class="cart__item__content__titlePrice">
-              <h2>${product.name} - ${item.colorChoice}</h2>
-              <p>${product.price} €</p>
+              <h2>${product.name} - ${item.colorChoice} - ${product.price} €</h2>
+              <p>Sous-total : ${subTotalPrice} €</p>
             </div>
             <div class="cart__item__content__settings">
               <div class="cart__item__content__settings__quantity">

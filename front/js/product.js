@@ -1,4 +1,4 @@
-import { getCart, findProductIndexInCart, saveCart } from "./commonCart";
+import { getCart, findProductIndexInCart, saveCart } from './commonCart.js';
 
 //fonction pour verifier l'id de l'url est manquant
 function idCheckInUrl(id) {
@@ -27,7 +27,7 @@ function addToCart(itemId, colorChoice, quantity, price) {
 }
 
 //code generale de la page
-//on recupere le paramtre dans l'url et on le stocke dans la variable id
+//on recupere le parametre dans l'url et on le stocke dans la variable id
 let params = (new URL(document.location)).searchParams;
 let id = params.get("id");
 //on se sert de l'id recupéré pour interroger l'API pour l'id concerné

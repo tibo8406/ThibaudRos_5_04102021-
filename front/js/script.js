@@ -1,5 +1,5 @@
 async function loadConfig() {
-    let result = await fetch("../../front/config.json");
+    let result = await fetch("./../config.json");
     return result.json();
 }
 //chargement de la config (url api)
