@@ -116,7 +116,7 @@ function recupForm() {
 
     //fonction validation du nom
     function validateLettersLastName(inputLastName) {
-        let lettersRegex = new RegExp("^[a-zA-Z\-]+$");
+        let lettersRegex = new RegExp("^[a-zA-Z\- ]+$");
         let lastNameErrorMsg = inputLastName.nextElementSibling;
         if (lettersRegex.test(inputLastName.value)) {
             lastNameErrorMsg.innerHTML = "<font color=green>Ok</font>";
@@ -135,7 +135,7 @@ function recupForm() {
 
     //fonction validation du prénom
     function validateLettersFirstName(inputFirstName) {
-        let lettersRegex = new RegExp("^[a-zA-Z\-]+$");
+        let lettersRegex = new RegExp("^[a-zA-Z\- ]+$");
 
         let firstNameErrorMsg = inputFirstName.nextElementSibling;
 

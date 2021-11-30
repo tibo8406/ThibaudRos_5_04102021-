@@ -1,3 +1,4 @@
+import Product;
 async function loadConfig() {
     let result = await fetch("./../config.json");
     return result.json();
@@ -8,11 +9,11 @@ loadConfig().then(data => {
     //requete et redcuperation de produits dans l'api
     fetch(config.host + "/api/products").then(data => data.json())
         .then(jsonListProducts => {
-            class Product {
+            /*class Product {
                 constructor(jsonProduct) {
                     jsonProduct && Object.assign(this, jsonProduct);
                 }
-            }
+            }*/
             let productsHTML = "";
             //integration html des elements pour chaque produits
             for (let jsonProduct of jsonListProducts) {
