@@ -68,8 +68,12 @@ function modifyQuantity() {
             //on trouve l'index correspondant au produit
             const index = findProductIndexInCart(idmodif, colormodif);
             //on modifie la quantité de l'index correspodant par la valeur de l'element
-            listCart[index].quantity = element.valueAsNumber;
-            //on suvegarde le panier
+            if (element.valueAsNumber == 0) {
+                listCart.splice(index, 1);
+            } else {
+                listCart[index].quantity = element.valueAsNumber;
+            }
+            //on sauvegarde le panier
             saveCart(listCart);
             // on recharge la page
             location.reload();
@@ -239,9 +243,7 @@ document.getElementById("order").addEventListener("click", (event) => {
                 return res.json();
             })
             .then(function(elt) {
-                console.log(elt);
                 localStorage.setItem("orderId", elt.orderId);
-
                 document.location.href = "confirmation.html";
             })
             .catch(function(err) {
