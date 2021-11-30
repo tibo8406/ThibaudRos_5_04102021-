@@ -68,7 +68,7 @@ function modifyQuantity() {
             //on trouve l'index correspondant au produit
             const index = findProductIndexInCart(idmodif, colormodif);
             //on modifie la quantité de l'index correspodant par la valeur de l'element
-            if (element.valueAsNumber == 0) {
+            if (element.valueAsNumber <= 0) {
                 listCart.splice(index, 1);
             } else {
                 listCart[index].quantity = element.valueAsNumber;

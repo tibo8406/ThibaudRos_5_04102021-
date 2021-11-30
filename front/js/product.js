@@ -48,7 +48,7 @@ fetch(url)
         document.getElementById("description").innerHTML = `${product.description}`;
         let colorHTML = "<option value=\"\">--SVP, choisissez une couleur --</option>";
         //ajout des couleurs
-        for (let i = 0; i < product.colors.length; i++) {
+        for (let i in product.colors) {
             colorHTML += `<option value="${product.colors[i]}">${product.colors[i]}</option>`;
         }
         document.getElementById("colors").innerHTML = colorHTML;
