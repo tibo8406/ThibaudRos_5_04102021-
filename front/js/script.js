@@ -1,3 +1,5 @@
+import { Product } from './class.js';
+
 async function loadConfig() {
     let result = await fetch("./../config.json");
     return result.json();
@@ -8,20 +10,21 @@ loadConfig().then(data => {
     //requete et redcuperation de produits dans l'api
     fetch(config.host + "/api/products").then(data => data.json())
         .then(jsonListProducts => {
-            class Product {
+            /*class Product {
                 constructor(jsonProduct) {
                     jsonProduct && Object.assign(this, jsonProduct);
                 }
-            }
+            }*/
             let productsHTML = "";
             //integration html des elements pour chaque produits
             for (let jsonProduct of jsonListProducts) {
-                const product = new Product(jsonProduct);
-                productsHTML += `<a href="./product.html?id=${product._id}">
+                const kanap = new Product(jsonProduct);
+                console.log(kanap);
+                productsHTML += `<a href="./product.html?id=${kanap._id}">
                 <article>
-                  <img src="${product.imageUrl}" alt="${product.altTxt}, ${product.name}">
-                  <h3 class="productName">${product.name}</h3>
-                  <p class="productDescription">${product.description}</p>
+                  <img src="${kanap.imageUrl}" alt="${kanap.altTxt}, ${kanap.name}">
+                  <h3 class="productName">${kanap.name}</h3>
+                  <p class="productDescription">${kanap.description}</p>
                 </article>
               </a>`;
             }
